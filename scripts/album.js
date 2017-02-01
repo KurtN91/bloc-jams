@@ -29,6 +29,22 @@
      ]
  };
 
+var albumGriseldi = {
+    title: 'Thubtumping',
+    artist: "Cumbawomba Griseldi",
+    label: 'Snirklethorp',
+    year: '820',
+    albumArtUrl: 'assets/images/album_covers/04.png',
+    songs: [
+            {title: 'The letter 9', duration: '32:01'},
+            {title: 'Boofism', duration: '0:09'},
+            {title: 'Rocks in the watermelon', duration: '83:30'},
+            {title: 'Watching the radio', duration: '3:59'},
+            {title: 'Glass Meat Clocks', duration: '2:12'},
+            {title: 'Song of the yarbong', duration: 'salmon'}
+    ]
+};
+
  var createSongRow = function(songNumber, songName, songLength) {
      var template =
         '<tr class="album-view-song-item">'
@@ -62,8 +78,18 @@
      for (var i = 0; i < album.songs.length; i++) {
          albumSongList.innerHTML += createSongRow(i + 1, album.songs[i].title, album.songs[i].duration);
      }
+
  };
  
  window.onload = function() {
      setCurrentAlbum(albumPicasso);
+     var albums = [albumPicasso, albumMarconi, albumGriseldi];
+     var spot = 1;
+     albumImage.addEventListener("click", function(event){
+         setCurrentAlbum(albums[spot]);
+         spot++;
+         if(spot == albumns.length){
+             spot = 0;
+         }
+     });
  };
