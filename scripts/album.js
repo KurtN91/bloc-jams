@@ -162,6 +162,13 @@ var trackIndex = function(album, song) {
      return album.songs.indexOf(song);
  };
 
+function setCurrentTimeInPlayerBar(currentTime){
+    $(this).html('.current-time', currentTime);
+}
+
+function setTotalTimeInPlayerBar(totalTime){
+    
+}
 
 var updatePlayerBarSong = function() {
 
@@ -202,6 +209,40 @@ var nextSong = function() {
     
 };
 
+
+var previousSong = function() {
+    
+
+    var getLastSongNumber = function(index) {
+        return index == (currentAlbum.songs.length - 1) ? 1 : index + 2;
+    };
+    
+    var currentSongIndex = trackIndex(currentAlbum, currentSongFromAlbum);
+    currentSongIndex--;
+    
+    if (currentSongIndex < 0) {
+        currentSongIndex = currentAlbum.songs.length - 1;
+    }
+    
+
+    currentlyPlayingSongNumber = currentSongIndex + 1;
+    currentSoundFile.play();
+    currentSongFromAlbum = currentAlbum.songs[currentSongIndex];
+
+    $('.currently-playing .song-name').text(currentSongFromAlbum.title);
+    $('.currently-playing .artist-name').text(currentAlbum.artist);
+    $('.currently-playing .artist-song-mobile').text(currentSongFromAlbum.title + " - " + currentAlbum.title);
+    $('.main-controls .play-pause').html(playerBarPauseButton);
+    
+    var lastSongNumber = getLastSongNumber(currentSongIndex);
+    var $previousSongNumberCell = $('.song-item-number[data-song-number="' + currentlyPlayingSongNumber + '"]');
+    var $lastSongNumberCell = $('.song-item-number[data-song-number="' + lastSongNumber + '"]');
+    
+    $previousSongNumberCell.html(pauseButtonTemplate);
+    $lastSongNumberCell.html(lastSongNumber);
+    
+};
+
      
 var setSong = function(songNumber) {
     
@@ -222,48 +263,33 @@ var setSong = function(songNumber) {
      if (currentSoundFile) {
          currentSoundFile.setTime(time);
      }
- }
+ };
 
  var setVolume = function(volume) {
      if (currentSoundFile) {
          currentSoundFile.setVolume(volume);
      }
  };
-}
+
                                     
 var getSongNumberCell = function(number){
   return $('.song-item-number[data-song-number="' + number + '"]');
 }
- 
- var previousSong = function() {
-     ...
-     setSong(currentSongIndex + 1);
-     currentSoundFile.play();
-     updatePlayerBarSong();
-     ...
- };
-     
- var nextSong = function() {
-     ...
-     setSong(currentSongIndex + 1);
-     currentSoundFile.play();
-     updatePlayerBarSong();
-     ...
- };
+
+
 
      
 var holder = $('.main-controls .play-pause');
 
 function togglePlayFromPlayerBar(){
-    if(currentSoundFile.isPaused){
-        var songNumberCell =  $(this).find('.song-item-number');
-        songNumberCell.html(playButtonTemplate);
-        currentSoundFile.play();
-
-    } else if (currentSoundFile){
-        var songNumberCell =  $(this).find('.song-item-number');
-        songNumberCell.html(pauseButtonTemplate);
-        currentSoundFile.pause();
+            if (currentSoundFile.isPaused()) {
+                $(this).html(pauseButtonTemplate);
+                $('.main-controls .play-pause').html(playerBarPauseButton);
+                currentSoundFile.play();
+            } else {
+                $(this).html(playButtonTemplate);
+                $('.main-controls .play-pause').html(playerBarPlayButton);
+                currentSoundFile.pause();   
     }
 }     
      
@@ -276,28 +302,3 @@ function togglePlayFromPlayerBar(){
 
      });
      
-          songListContainer.addEventListener('mouseover', function(event) {
-         if (event.target.parentElement.className === 'album-view-song-item') {
-           var songItem = getSongItem(event.target);
-
-          if (songItem.getAttribute('data-song-number') !== currentlyPlayingSong) {
-                songItem.innerHTML = playButtonTemplate;
- }}
-     });
-     
-          for (var i = 0; i < songRows.length; i++) {
-         songRows[i].addEventListener('mouseleave', function(event) {
-              var songItem = getSongItem(event.target);
-             var songItemNumber = parseInt(songItem.getAttribute('data-song-number'));
- 
-             // #2
-             if (songItemNumber !== currentlyPlayingSong) {
-                 songItem.innerHTML = parseInt(songItemNumber);
-             }
-         });
-              
-         songRows[i].addEventListener('click', function(event) {
-             clickHandler(event.target);
-         });
-     }
- };
